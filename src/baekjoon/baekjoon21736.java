@@ -52,8 +52,9 @@ public class baekjoon21736 {
             }
         }
 
-        find_friend(start_row, start_col);
+//        find_friend(start_row, start_col);
 
+        dfs(start_row, start_col);
 
         if(count == 0){//주변에 친구가 없으면
             System.out.println("TT");
@@ -96,6 +97,26 @@ public class baekjoon21736 {
             }
         }
 
+    }
+
+    public static void dfs(int r, int c){
+        check[r][c] = true;
+
+        if(campus[r][c] == 'P')
+            count++;
+
+        for(int i = 0; i < 4; i++){
+            int next_row = r + dx[i];
+            int next_col = c + dy[i];
+
+            if(next_row < 0 || next_col < 0 || row <= next_row || col <= next_col )
+                continue;
+
+            if(campus[next_row][next_col] == 'X' || check[next_row][next_col])
+                continue;
+
+            dfs(next_row, next_col);
+        }
     }
 
 }
