@@ -35,7 +35,8 @@ public class baekjoon2667 {
             for(int j = 0; j < row_col; j++){
                 if(map[i][j] == 1 && !check[i][j]){
                     //집이 있는 곳이고, 방문하지 않았다면
-                    bfs(i, j);
+//                    bfs(i, j);
+                    dfs(i,j);
                     list.add(count);
                     count = 0;
                 }
@@ -76,6 +77,28 @@ public class baekjoon2667 {
 
 
             }
+
+        }
+
+
+    }
+
+    public static void dfs (int r, int c){
+        check[r][c] = true;
+
+        count++;
+        for(int i = 0; i < 4; i++){
+            int next_row = r + dx[i];
+            int next_col = c + dy[i];
+
+            if(next_row < 0 || next_col < 0 || next_row >= row_col || next_col >= row_col ){
+                continue;
+            }
+            if(check[next_row][next_col] || map[next_row][next_col] == 0){
+                continue;
+            }
+
+            dfs(next_row, next_col);
 
         }
 
