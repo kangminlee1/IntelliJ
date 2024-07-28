@@ -7,12 +7,21 @@ import java.util.*;
 
 public class baekjoon1389 {
 
+    static class Point{
+        int x;
+        int y;
+
+        public Point(int x, int y){
+            this.x= x;
+            this.y = y;
+
+        }
+    }
+
     static int man, friend;
 
-    static ArrayList<Integer>[] graph;
+    static ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
     //연결되어 있는 그래프 표현을 위함
-    static int[] map;
-    //해당하는 사람의 연결된 수
 
     static int min = Integer.MAX_VALUE;;
 
@@ -25,26 +34,20 @@ public class baekjoon1389 {
         friend = Integer.parseInt(st.nextToken());
         //인간관계의 수
 
-        map = new int[man + 1];
-        //1일 때, 2일 때.... 카운트하기 위함
-
-        graph = new ArrayList[man + 1];
-        //1일 때, 2일 때 .... 그래프를 표현하기 위함
-
-        for(int i = 1; i <= man; i++){
-            graph[i] = new ArrayList<>();
+        for(int i = 0; i <= man; i++){
+            graph.add(new ArrayList<>());
             //그래프를 초기화
         }
 
 
-        for(int i = 1; i <= friend; i++){
+        for(int i = 0; i < friend; i++){
             st = new StringTokenizer(br.readLine());
 
             int row = Integer.parseInt(st.nextToken());
             int col = Integer.parseInt(st.nextToken());
 
-            graph[row].add(col);
-            graph[col].add(row);
+            graph.get(row).add(col);
+            graph.get(col).add(row);
             //무방향 그래프로 서로 연결
 
         }
@@ -53,46 +56,39 @@ public class baekjoon1389 {
         //케빈 베이컨 수가 가장 적은 사람
 
         for(int i = 1; i <= man; i++){
-            int temp = kevin_bacon(i);
-
-            if(min > temp){
-                min = temp;
+            if( min > kevin_bacon(i)){
+                min = kevin_bacon(i);
                 min_cnt = i;
             }
-
         }
 
         System.out.println(min_cnt);
     }
 
     public static int kevin_bacon(int start){
-        Arrays.fill(map, -1);
+//        Arrays.fill(map, -1);
         //방문 여부와 count 초기화 (기존 값에 영향을 받지 않기 위함)
         //Arrays.fill(배열, 초기화할 값);
         int count = 0;
         //이동 횟수
-        Queue<Integer> que = new LinkedList<>();
-        que.add(start);
-        map[start] = 0;
-        //해당하는 사람을 0으로 초기화
-        //밑에 조건문에서 -1이 아니면 방문한 사람으로 간주하기 위함
+        Queue<Point> que = new LinkedList<>();
+        boolean[] check = new boolean[man + +1];
+
+        que.add(new Point(start, 0));
+        check[start] = true;
 
         while(!que.isEmpty()){
-            int temp = que.poll();
+            Point temp = que.poll();
 
-            for(int i : graph[temp]){
+            for(int i : graph.get(temp.x)){
                 //graph[temp] 는 해당 그래프 배열에 들어있는 요소를 의미하기 위함
-                if(map[i] != -1) {
-                    continue;
-                    //만약 방문 했다면 pass
+                if(!check[i]) {
+                    //방문하지 않았을 경우
+                    count += temp.y + 1;
+                    //방문하지 않았던 관계 이동 횟수 갱신
+                    check[i] = true;
+                    que.add(new Point(i, temp.y + 1));
                 }
-
-                map[i] = map[temp] + 1;
-                //해당 사람을 방문하지 않았다면 건너오는 경로 + 1
-                count += map[i];
-                //이동 횟수 갱신
-                que.add(i);
-
             }
         }
 
